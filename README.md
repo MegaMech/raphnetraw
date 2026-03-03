@@ -2,7 +2,7 @@
 Clarifications:
 * Not related to DInput or Direct Input
 * The hardware takes the spec +-85 analogue stick and converts it to +-127 for use in modern games
-* Direct access allows to use the original +-85 for N64 games without skipping any conversions
+* Direct access allows to use the original +-85 for N64 games without performing any conversions
 
 
 This mupen64plus plugin uses the direct controller access feature offered by my N64 to USB
