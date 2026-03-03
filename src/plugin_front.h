@@ -43,6 +43,8 @@
 
 #define PAK_IO_RUMBLE       0xC000      // the address where rumble-commands are sent to
 
+typedef int CONTROL_INFO; // todo: remove unused m64 struct
+
 void RaphnetInitialize(void);
 void RaphnetShutdown(void);
 void InitiateControllers(CONTROL_INFO ControlInfo);

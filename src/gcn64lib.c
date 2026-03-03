@@ -47,24 +47,33 @@ int gcn64lib_getConfig(gcn64_hdl_t hdl, unsigned char param, unsigned char *rx, 
 
 	return n;
 }
-int gcn64lib_setConfig(gcn64_hdl_t hdl, unsigned char param, unsigned char *data, unsigned char len)
-{
-	unsigned char cmd[2 + len];
-	int n;
 
-	if (!hdl) {
-		return -1;
-	}
+int gcn64lib_setConfig(gcn64_hdl_t hdl, unsigned char param, unsigned char *data, unsigned char len) {
+    unsigned char* cmd;
+    size_t cmd_size = 2 + (size_t) len;
+    int n;
 
-	cmd[0] = RQ_GCN64_SET_CONFIG_PARAM;
-	cmd[1] = param;
-	memcpy(cmd + 2, data, len);
+    if (!hdl) {
+        return -1;
+    }
 
-	n = gcn64_exchange(hdl, cmd, 2 + len, cmd, sizeof(cmd));
-	if (n<0)
-		return n;
+    cmd = (unsigned char*) malloc(cmd_size);
+    if (!cmd) {
+        return -1;
+    }
 
-	return 0;
+    cmd[0] = RQ_GCN64_SET_CONFIG_PARAM;
+    cmd[1] = param;
+
+    if (len > 0 && data) {
+        memcpy(cmd + 2, data, len);
+    }
+
+    n = gcn64_exchange(hdl, cmd, cmd_size, cmd, cmd_size);
+
+    free(cmd);
+
+    return (n < 0) ? n : 0;
 }
 
 int gcn64lib_suspendPolling(gcn64_hdl_t hdl, unsigned char suspend)
@@ -195,34 +204,45 @@ int gcn64lib_forceVibration(gcn64_hdl_t hdl, unsigned char channel, unsigned cha
 
 int gcn64lib_rawSiCommand(gcn64_hdl_t hdl, unsigned char channel, unsigned char *tx, unsigned char tx_len, unsigned char *rx, unsigned char max_rx)
 {
-	unsigned char cmd[3 + tx_len];
-	unsigned char rep[3 + 64];
-	int cmdlen, rx_len, n;
+    unsigned char* cmd = NULL;
+    unsigned char rep[3 + 64]; /* already fixed-size, OK */
+    size_t cmdlen;
+    int rx_len;
+    int n;
 
-	if (!hdl) {
-		return -1;
-	}
+    if (!hdl || !tx) {
+        return -1;
+    }
 
-	if (!tx) {
-		return -1;
-	}
+    cmdlen = 3 + (size_t) tx_len;
 
-	cmd[0] = RQ_GCN64_RAW_SI_COMMAND;
-	cmd[1] = channel;
-	cmd[2] = tx_len;
-	memcpy(cmd+3, tx, tx_len);
-	cmdlen = 3 + tx_len;
+    cmd = (unsigned char*) malloc(cmdlen);
+    if (!cmd) {
+        return -1;
+    }
 
-	n = gcn64_exchange(hdl, cmd, cmdlen, rep, sizeof(rep));
-	if (n<0)
-		return n;
+    cmd[0] = RQ_GCN64_RAW_SI_COMMAND;
+    cmd[1] = channel;
+    cmd[2] = tx_len;
+    memcpy(cmd + 3, tx, tx_len);
 
-	rx_len = rep[2];
-	if (rx) {
-		memcpy(rx, rep + 3, rx_len);
-	}
+    n = gcn64_exchange(hdl, cmd, cmdlen, rep, sizeof(rep));
 
-	return rx_len;
+    free(cmd);
+
+    if (n < 0)
+        return n;
+
+    rx_len = rep[2];
+
+    if (rx && rx_len > 0) {
+        if (rx_len > max_rx) {
+            rx_len = max_rx;
+        }
+        memcpy(rx, rep + 3, rx_len);
+    }
+
+    return rx_len;
 }
 
 int gcn64lib_16bit_scan(gcn64_hdl_t hdl, unsigned short min, unsigned short max)
@@ -287,27 +307,45 @@ int gcn64lib_bootloader(gcn64_hdl_t hdl)
 
 int gcn64lib_n64_expansionWrite(gcn64_hdl_t hdl, unsigned short addr, unsigned char *data, int len)
 {
-	unsigned char cmd[3 + len];
-	int cmdlen;
-	int n;
+    unsigned char* cmd = NULL;
+    size_t cmdlen;
+    int n;
+    int ret;
 
-	if (!hdl) {
-		return -1;
-	}
+    if (!hdl || (len > 0 && !data)) {
+        return -1;
+    }
 
-	cmd[0] = N64_EXPANSION_WRITE;
-	cmd[1] = addr>>8; // Address high byte
-	cmd[2] = addr&0xff; // Address low byte
-	memcpy(cmd + 3, data, len);
-	cmdlen = 3 + len;
+    if (len < 0) {
+        return -1;
+    }
 
-	n = gcn64lib_rawSiCommand(hdl, 0, cmd, cmdlen, cmd, sizeof(cmd));
-	if (n != 1) {
-		printf("expansion write returned != 1 (%d)\n", n);
-		return -1;
-	}
+    cmdlen = 3 + (size_t) len;
 
-	return cmd[0];
+    cmd = (unsigned char*) malloc(cmdlen);
+    if (!cmd) {
+        return -1;
+    }
+
+    cmd[0] = N64_EXPANSION_WRITE;
+    cmd[1] = (unsigned char) (addr >> 8);   // Address high byte
+    cmd[2] = (unsigned char) (addr & 0xff); // Address low byte
+
+    if (len > 0) {
+        memcpy(cmd + 3, data, len);
+    }
+
+    n = gcn64lib_rawSiCommand(hdl, 0, cmd, cmdlen, cmd, cmdlen);
+    if (n != 1) {
+        printf("expansion write returned != 1 (%d)\n", n);
+        free(cmd);
+        return -1;
+    }
+
+    ret = cmd[0]; // Save before freeing
+    free(cmd);
+
+    return ret;
 }
 
 int gcn64lib_n64_expansionRead(gcn64_hdl_t hdl, unsigned short addr, unsigned char *dst, int max_len)
