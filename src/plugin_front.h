@@ -26,9 +26,9 @@
 
 #include <string.h>
 
-#define M64P_PLUGIN_PROTOTYPES 1
-#include "m64p_config.h"
-#include "m64p_plugin.h"
+// #define M64P_PLUGIN_PROTOTYPES 1
+// #include "m64p_config.h"
+// #include "m64p_plugin.h"
 
 #define DEVICE_NO_JOYSTICK  (-1)
 
@@ -43,29 +43,35 @@
 
 #define PAK_IO_RUMBLE       0xC000      // the address where rumble-commands are sent to
 
-/* declarations of pointers to Core config functions */
-extern ptr_ConfigListSections     ConfigListSections;
-extern ptr_ConfigOpenSection      ConfigOpenSection;
-extern ptr_ConfigDeleteSection    ConfigDeleteSection;
-extern ptr_ConfigListParameters   ConfigListParameters;
-extern ptr_ConfigSaveFile         ConfigSaveFile;
-extern ptr_ConfigSaveSection      ConfigSaveSection;
-extern ptr_ConfigSetParameter     ConfigSetParameter;
-extern ptr_ConfigGetParameter     ConfigGetParameter;
-extern ptr_ConfigGetParameterHelp ConfigGetParameterHelp;
-extern ptr_ConfigSetDefaultInt    ConfigSetDefaultInt;
-extern ptr_ConfigSetDefaultFloat  ConfigSetDefaultFloat;
-extern ptr_ConfigSetDefaultBool   ConfigSetDefaultBool;
-extern ptr_ConfigSetDefaultString ConfigSetDefaultString;
-extern ptr_ConfigGetParamInt      ConfigGetParamInt;
-extern ptr_ConfigGetParamFloat    ConfigGetParamFloat;
-extern ptr_ConfigGetParamBool     ConfigGetParamBool;
-extern ptr_ConfigGetParamString   ConfigGetParamString;
+void RaphnetInitialize(void);
+void RaphnetShutdown(void);
+void InitiateControllers(CONTROL_INFO ControlInfo);
+void ReadController(int Control, unsigned char *Command);
+void ControllerCommand(int Control, unsigned char *Command);
 
-extern ptr_ConfigGetSharedDataFilepath ConfigGetSharedDataFilepath;
-extern ptr_ConfigGetUserConfigPath     ConfigGetUserConfigPath;
-extern ptr_ConfigGetUserDataPath       ConfigGetUserDataPath;
-extern ptr_ConfigGetUserCachePath      ConfigGetUserCachePath;
+/* declarations of pointers to Core config functions */
+// extern ptr_ConfigListSections     ConfigListSections;
+// extern ptr_ConfigOpenSection      ConfigOpenSection;
+// extern ptr_ConfigDeleteSection    ConfigDeleteSection;
+// extern ptr_ConfigListParameters   ConfigListParameters;
+// extern ptr_ConfigSaveFile         ConfigSaveFile;
+// extern ptr_ConfigSaveSection      ConfigSaveSection;
+// extern ptr_ConfigSetParameter     ConfigSetParameter;
+// extern ptr_ConfigGetParameter     ConfigGetParameter;
+// extern ptr_ConfigGetParameterHelp ConfigGetParameterHelp;
+// extern ptr_ConfigSetDefaultInt    ConfigSetDefaultInt;
+// extern ptr_ConfigSetDefaultFloat  ConfigSetDefaultFloat;
+// extern ptr_ConfigSetDefaultBool   ConfigSetDefaultBool;
+// extern ptr_ConfigSetDefaultString ConfigSetDefaultString;
+// extern ptr_ConfigGetParamInt      ConfigGetParamInt;
+// extern ptr_ConfigGetParamFloat    ConfigGetParamFloat;
+// extern ptr_ConfigGetParamBool     ConfigGetParamBool;
+// extern ptr_ConfigGetParamString   ConfigGetParamString;
+
+// extern ptr_ConfigGetSharedDataFilepath ConfigGetSharedDataFilepath;
+// extern ptr_ConfigGetUserConfigPath     ConfigGetUserConfigPath;
+// extern ptr_ConfigGetUserDataPath       ConfigGetUserDataPath;
+// extern ptr_ConfigGetUserCachePath      ConfigGetUserCachePath;
 
 #endif // __PLUGIN_H__
 

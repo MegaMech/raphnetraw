@@ -39,13 +39,13 @@
 #include <string.h>
 #include <math.h>
 
-#define M64P_PLUGIN_PROTOTYPES 1
-#include "config.h"
-#include "m64p_common.h"
-#include "m64p_config.h"
-#include "m64p_plugin.h"
-#include "m64p_types.h"
-#include "osal_dynamiclib.h"
+//#define M64P_PLUGIN_PROTOTYPES 1
+//#include "config.h"
+// #include "m64p_common.h"
+// #include "m64p_config.h"
+// #include "m64p_plugin.h"
+// #include "m64p_types.h"
+//#include "osal_dynamiclib.h"
 #include "plugin_front.h"
 #include "plugin_back.h"
 #include "version.h"
@@ -119,76 +119,122 @@ static void DebugMessage(int level, const char *message, ...)
 
 
 /* Mupen64Plus plugin functions */
-EXPORT m64p_error CALL PluginStartup(m64p_dynlib_handle CoreLibHandle, void *Context,
-                                   void (*DebugCallback)(void *, int, const char *))
-{
-    ptr_CoreGetAPIVersions CoreAPIVersionFunc;
+// EXPORT m64p_error CALL PluginStartup(m64p_dynlib_handle CoreLibHandle, void *Context,
+//                                    void (*DebugCallback)(void *, int, const char *))
+// {
+//     // ptr_CoreGetAPIVersions CoreAPIVersionFunc;
 
-    int ConfigAPIVersion, DebugAPIVersion, VidextAPIVersion;
+//     // int ConfigAPIVersion, DebugAPIVersion, VidextAPIVersion;
 
-    if (l_PluginInit) {
-    	return M64ERR_ALREADY_INIT;
-	}
+//     // if (l_PluginInit) {
+//     // 	return M64ERR_ALREADY_INIT;
+// 	// }
 
-	l_DebugCallback = DebugCallback;
-	l_DebugCallContext = Context;
+// 	// l_DebugCallback = DebugCallback;
+// 	// l_DebugCallContext = Context;
 
-    /* attach and call the CoreGetAPIVersions function, check Config API version for compatibility */
-    CoreAPIVersionFunc = (ptr_CoreGetAPIVersions) osal_dynlib_getproc(CoreLibHandle, "CoreGetAPIVersions");
-    if (CoreAPIVersionFunc == NULL)
-    {
-        DebugMessage(M64MSG_ERROR, "Core emulator broken; no CoreAPIVersionFunc() function found.");
-        return M64ERR_INCOMPATIBLE;
-    }
+//     // /* attach and call the CoreGetAPIVersions function, check Config API version for compatibility */
+//     // CoreAPIVersionFunc = (ptr_CoreGetAPIVersions) osal_dynlib_getproc(CoreLibHandle, "CoreGetAPIVersions");
+//     // if (CoreAPIVersionFunc == NULL)
+//     // {
+//     //     DebugMessage(M64MSG_ERROR, "Core emulator broken; no CoreAPIVersionFunc() function found.");
+//     //     return M64ERR_INCOMPATIBLE;
+//     // }
     
-    (*CoreAPIVersionFunc)(&ConfigAPIVersion, &DebugAPIVersion, &VidextAPIVersion, NULL);
-    if ((ConfigAPIVersion & 0xffff0000) != (CONFIG_API_VERSION & 0xffff0000) || ConfigAPIVersion < CONFIG_API_VERSION)
-    {
-        DebugMessage(M64MSG_ERROR, "Emulator core Config API (v%i.%i.%i) incompatible with plugin (v%i.%i.%i)",
-                VERSION_PRINTF_SPLIT(ConfigAPIVersion), VERSION_PRINTF_SPLIT(CONFIG_API_VERSION));
-        return M64ERR_INCOMPATIBLE;
-    }
-#if 0
-    /* Get the core config function pointers from the library handle */
-    ConfigOpenSection = (ptr_ConfigOpenSection) osal_dynlib_getproc(CoreLibHandle, "ConfigOpenSection");
-    ConfigDeleteSection = (ptr_ConfigDeleteSection) osal_dynlib_getproc(CoreLibHandle, "ConfigDeleteSection");
-    ConfigSaveFile = (ptr_ConfigSaveFile) osal_dynlib_getproc(CoreLibHandle, "ConfigSaveFile");
-    ConfigSaveSection = (ptr_ConfigSaveSection) osal_dynlib_getproc(CoreLibHandle, "ConfigSaveSection");
-    ConfigListParameters = (ptr_ConfigListParameters) osal_dynlib_getproc(CoreLibHandle, "ConfigListParameters");
-    ConfigSetParameter = (ptr_ConfigSetParameter) osal_dynlib_getproc(CoreLibHandle, "ConfigSetParameter");
-    ConfigGetParameter = (ptr_ConfigGetParameter) osal_dynlib_getproc(CoreLibHandle, "ConfigGetParameter");
-    ConfigSetDefaultInt = (ptr_ConfigSetDefaultInt) osal_dynlib_getproc(CoreLibHandle, "ConfigSetDefaultInt");
-    ConfigSetDefaultFloat = (ptr_ConfigSetDefaultFloat) osal_dynlib_getproc(CoreLibHandle, "ConfigSetDefaultFloat");
-    ConfigSetDefaultBool = (ptr_ConfigSetDefaultBool) osal_dynlib_getproc(CoreLibHandle, "ConfigSetDefaultBool");
-    ConfigSetDefaultString = (ptr_ConfigSetDefaultString) osal_dynlib_getproc(CoreLibHandle, "ConfigSetDefaultString");
-    ConfigGetParamInt = (ptr_ConfigGetParamInt) osal_dynlib_getproc(CoreLibHandle, "ConfigGetParamInt");
-    ConfigGetParamFloat = (ptr_ConfigGetParamFloat) osal_dynlib_getproc(CoreLibHandle, "ConfigGetParamFloat");
-    ConfigGetParamBool = (ptr_ConfigGetParamBool) osal_dynlib_getproc(CoreLibHandle, "ConfigGetParamBool");
-    ConfigGetParamString = (ptr_ConfigGetParamString) osal_dynlib_getproc(CoreLibHandle, "ConfigGetParamString");
+//     // (*CoreAPIVersionFunc)(&ConfigAPIVersion, &DebugAPIVersion, &VidextAPIVersion, NULL);
+//     // if ((ConfigAPIVersion & 0xffff0000) != (CONFIG_API_VERSION & 0xffff0000) || ConfigAPIVersion < CONFIG_API_VERSION)
+//     // {
+//     //     DebugMessage(M64MSG_ERROR, "Emulator core Config API (v%i.%i.%i) incompatible with plugin (v%i.%i.%i)",
+//     //             VERSION_PRINTF_SPLIT(ConfigAPIVersion), VERSION_PRINTF_SPLIT(CONFIG_API_VERSION));
+//     //     return M64ERR_INCOMPATIBLE;
+//     // }
+// #if 0
+//     /* Get the core config function pointers from the library handle */
+//     ConfigOpenSection = (ptr_ConfigOpenSection) osal_dynlib_getproc(CoreLibHandle, "ConfigOpenSection");
+//     ConfigDeleteSection = (ptr_ConfigDeleteSection) osal_dynlib_getproc(CoreLibHandle, "ConfigDeleteSection");
+//     ConfigSaveFile = (ptr_ConfigSaveFile) osal_dynlib_getproc(CoreLibHandle, "ConfigSaveFile");
+//     ConfigSaveSection = (ptr_ConfigSaveSection) osal_dynlib_getproc(CoreLibHandle, "ConfigSaveSection");
+//     ConfigListParameters = (ptr_ConfigListParameters) osal_dynlib_getproc(CoreLibHandle, "ConfigListParameters");
+//     ConfigSetParameter = (ptr_ConfigSetParameter) osal_dynlib_getproc(CoreLibHandle, "ConfigSetParameter");
+//     ConfigGetParameter = (ptr_ConfigGetParameter) osal_dynlib_getproc(CoreLibHandle, "ConfigGetParameter");
+//     ConfigSetDefaultInt = (ptr_ConfigSetDefaultInt) osal_dynlib_getproc(CoreLibHandle, "ConfigSetDefaultInt");
+//     ConfigSetDefaultFloat = (ptr_ConfigSetDefaultFloat) osal_dynlib_getproc(CoreLibHandle, "ConfigSetDefaultFloat");
+//     ConfigSetDefaultBool = (ptr_ConfigSetDefaultBool) osal_dynlib_getproc(CoreLibHandle, "ConfigSetDefaultBool");
+//     ConfigSetDefaultString = (ptr_ConfigSetDefaultString) osal_dynlib_getproc(CoreLibHandle, "ConfigSetDefaultString");
+//     ConfigGetParamInt = (ptr_ConfigGetParamInt) osal_dynlib_getproc(CoreLibHandle, "ConfigGetParamInt");
+//     ConfigGetParamFloat = (ptr_ConfigGetParamFloat) osal_dynlib_getproc(CoreLibHandle, "ConfigGetParamFloat");
+//     ConfigGetParamBool = (ptr_ConfigGetParamBool) osal_dynlib_getproc(CoreLibHandle, "ConfigGetParamBool");
+//     ConfigGetParamString = (ptr_ConfigGetParamString) osal_dynlib_getproc(CoreLibHandle, "ConfigGetParamString");
 
-    ConfigGetSharedDataFilepath = (ptr_ConfigGetSharedDataFilepath) osal_dynlib_getproc(CoreLibHandle, "ConfigGetSharedDataFilepath");
-    ConfigGetUserConfigPath = (ptr_ConfigGetUserConfigPath) osal_dynlib_getproc(CoreLibHandle, "ConfigGetUserConfigPath");
-    ConfigGetUserDataPath = (ptr_ConfigGetUserDataPath) osal_dynlib_getproc(CoreLibHandle, "ConfigGetUserDataPath");
-    ConfigGetUserCachePath = (ptr_ConfigGetUserCachePath) osal_dynlib_getproc(CoreLibHandle, "ConfigGetUserCachePath");
+//     ConfigGetSharedDataFilepath = (ptr_ConfigGetSharedDataFilepath) osal_dynlib_getproc(CoreLibHandle, "ConfigGetSharedDataFilepath");
+//     ConfigGetUserConfigPath = (ptr_ConfigGetUserConfigPath) osal_dynlib_getproc(CoreLibHandle, "ConfigGetUserConfigPath");
+//     ConfigGetUserDataPath = (ptr_ConfigGetUserDataPath) osal_dynlib_getproc(CoreLibHandle, "ConfigGetUserDataPath");
+//     ConfigGetUserCachePath = (ptr_ConfigGetUserCachePath) osal_dynlib_getproc(CoreLibHandle, "ConfigGetUserCachePath");
 
-    if (!ConfigOpenSection || !ConfigDeleteSection || !ConfigSaveFile || !ConfigSaveSection || !ConfigSetParameter || !ConfigGetParameter ||
-        !ConfigSetDefaultInt || !ConfigSetDefaultFloat || !ConfigSetDefaultBool || !ConfigSetDefaultString ||
-        !ConfigGetParamInt   || !ConfigGetParamFloat   || !ConfigGetParamBool   || !ConfigGetParamString ||
-        !ConfigGetSharedDataFilepath || !ConfigGetUserConfigPath || !ConfigGetUserDataPath || !ConfigGetUserCachePath)
-    {
-        DebugMessage(M64MSG_ERROR, "Couldn't connect to Core configuration functions");
-        return M64ERR_INCOMPATIBLE;
-    }
-#endif
+//     if (!ConfigOpenSection || !ConfigDeleteSection || !ConfigSaveFile || !ConfigSaveSection || !ConfigSetParameter || !ConfigGetParameter ||
+//         !ConfigSetDefaultInt || !ConfigSetDefaultFloat || !ConfigSetDefaultBool || !ConfigSetDefaultString ||
+//         !ConfigGetParamInt   || !ConfigGetParamFloat   || !ConfigGetParamBool   || !ConfigGetParamString ||
+//         !ConfigGetSharedDataFilepath || !ConfigGetUserConfigPath || !ConfigGetUserDataPath || !ConfigGetUserCachePath)
+//     {
+//         DebugMessage(M64MSG_ERROR, "Couldn't connect to Core configuration functions");
+//         return M64ERR_INCOMPATIBLE;
+//     }
+// #endif
+//     DebugMessage(M64MSG_INFO, "okay");
+// 	pb_init(DebugMessage);
 
+//     l_PluginInit = 1;
+//     return M64ERR_SUCCESS;
+// }
+
+// EXPORT m64p_error CALL PluginShutdown(void)
+// {
+//     if (!l_PluginInit) {
+// 		return M64ERR_NOT_INIT;
+// 	}
+
+// 	/* reset some local variables */
+// 	l_DebugCallback = NULL;
+// 	l_DebugCallContext = NULL;
+
+// 	pb_shutdown();
+
+//     l_PluginInit = 0;
+
+//     return M64ERR_SUCCESS;
+// }
+
+// EXPORT m64p_error CALL PluginGetVersion(m64p_plugin_type *PluginType, int *PluginVersion, int *APIVersion, const char **PluginNamePtr, int *Capabilities)
+// {
+//     /* set version info */
+//     if (PluginType != NULL)
+//         *PluginType = M64PLUGIN_INPUT;
+
+//     if (PluginVersion != NULL)
+//         *PluginVersion = PLUGIN_VERSION;
+
+//     if (APIVersion != NULL)
+//         *APIVersion = INPUT_PLUGIN_API_VERSION;
+
+//     if (PluginNamePtr != NULL)
+//         *PluginNamePtr = PLUGIN_NAME;
+
+//     if (Capabilities != NULL)
+//     {
+//         *Capabilities = 0;
+//     }
+
+//     return M64ERR_SUCCESS;
+// }
+
+void RaphnetInitialize(void) {
+    DebugMessage(M64MSG_INFO, "okay");
 	pb_init(DebugMessage);
 
     l_PluginInit = 1;
-    return M64ERR_SUCCESS;
 }
 
-EXPORT m64p_error CALL PluginShutdown(void)
-{
+void RaphnetShutdown(void) {
     if (!l_PluginInit) {
 		return M64ERR_NOT_INIT;
 	}
@@ -200,31 +246,6 @@ EXPORT m64p_error CALL PluginShutdown(void)
 	pb_shutdown();
 
     l_PluginInit = 0;
-
-    return M64ERR_SUCCESS;
-}
-
-EXPORT m64p_error CALL PluginGetVersion(m64p_plugin_type *PluginType, int *PluginVersion, int *APIVersion, const char **PluginNamePtr, int *Capabilities)
-{
-    /* set version info */
-    if (PluginType != NULL)
-        *PluginType = M64PLUGIN_INPUT;
-
-    if (PluginVersion != NULL)
-        *PluginVersion = PLUGIN_VERSION;
-
-    if (APIVersion != NULL)
-        *APIVersion = INPUT_PLUGIN_API_VERSION;
-
-    if (PluginNamePtr != NULL)
-        *PluginNamePtr = PLUGIN_NAME;
-
-    if (Capabilities != NULL)
-    {
-        *Capabilities = 0;
-    }
-
-    return M64ERR_SUCCESS;
 }
 
 /******************************************************************
@@ -236,39 +257,39 @@ EXPORT m64p_error CALL PluginGetVersion(m64p_plugin_type *PluginType, int *Plugi
               the emulator to know how to handle each controller.
   output:   none
 *******************************************************************/
-EXPORT void CALL InitiateControllers(CONTROL_INFO ControlInfo)
+void InitiateControllers(CONTROL_INFO ControlInfo)
 {
-    int i, n_controllers, adap_port;
+//     int i, n_controllers, adap_port;
 
-	n_controllers = pb_scanControllers();
+// 	n_controllers = pb_scanControllers();
 
-	if (n_controllers <= 0) {
-    	DebugMessage(PB_MSG_ERROR, "No adapters detected\n");
-		return;
-	}
+// 	if (n_controllers <= 0) {
+//     	DebugMessage(PB_MSG_ERROR, "No adapters detected\n");
+// 		return;
+// 	}
 
-	for (i=0; i<MAX_CONTROLLERS; i++) {
-		adap_port = EMU_2_ADAP_PORT(i);
+// 	for (i=0; i<MAX_CONTROLLERS; i++) {
+// 		adap_port = EMU_2_ADAP_PORT(i);
 
-		if (adap_port < n_controllers) {
-			ControlInfo.Controls[i].RawData = 1;
+// 		if (adap_port < n_controllers) {
+// 			ControlInfo.Controls[i].RawData = 1;
 
-			/* Setting this is currently required or we
-			 * won't be called at all.
-			 *
-			 * Look at pif.c update_pif_write() to see why.
-			 */
-			ControlInfo.Controls[i].Present = 1;
-		}
-	}
+// 			/* Setting this is currently required or we
+// 			 * won't be called at all.
+// 			 *
+// 			 * Look at pif.c update_pif_write() to see why.
+// 			 */
+// 			ControlInfo.Controls[i].Present = 1;
+// 		}
+// 	}
 
-    DebugMessage(PB_MSG_INFO, "%s version %i.%i.%i %s(compiled "__DATE__" "__TIME__") initialized.", PLUGIN_NAME, VERSION_PRINTF_SPLIT(PLUGIN_VERSION),
-#ifdef _DEBUG
-	"DEBUG "
-#else
-	""
-#endif
-	);
+//     DebugMessage(PB_MSG_INFO, "%s version %i.%i.%i %s(compiled "__DATE__" "__TIME__") initialized.", PLUGIN_NAME, VERSION_PRINTF_SPLIT(PLUGIN_VERSION),
+// #ifdef _DEBUG
+// 	"DEBUG "
+// #else
+// 	""
+// #endif
+// 	);
 }
 
 
@@ -283,49 +304,23 @@ EXPORT void CALL InitiateControllers(CONTROL_INFO ControlInfo)
   note:     This function is only needed if the DLL is allowing raw
             data.
 *******************************************************************/
-EXPORT void CALL ReadController(int Control, unsigned char *Command)
+void ReadController(int Control, unsigned char *Command)
 {
 	pb_readController(EMU_2_ADAP_PORT(Control), Command);
 }
 
-EXPORT void CALL ControllerCommand(int Control, unsigned char *Command)
+void ControllerCommand(int Control, unsigned char *Command)
 {
 	pb_controllerCommand(EMU_2_ADAP_PORT(Control), Command);
 }
 
-EXPORT void CALL GetKeys( int Control, BUTTONS *Keys )
-{
-}
-
-EXPORT void CALL RomClosed(void)
+void RomClosed(void)
 {
 	pb_romClosed();
 }
 
-EXPORT int CALL RomOpen(void)
+int RomOpen(void)
 {
 	pb_romOpen();
 	return 1;
-}
-
-/******************************************************************
-  Function: SDL_KeyDown
-  Purpose:  To pass the SDL_KeyDown message from the emulator to the
-            plugin.
-  input:    keymod and keysym of the SDL_KEYDOWN message.
-  output:   none
-*******************************************************************/
-EXPORT void CALL SDL_KeyDown(int keymod, int keysym)
-{
-}
-
-/******************************************************************
-  Function: SDL_KeyUp
-  Purpose:  To pass the SDL_KeyUp message from the emulator to the
-            plugin.
-  input:    keymod and keysym of the SDL_KEYUP message.
-  output:   none
-*******************************************************************/
-EXPORT void CALL SDL_KeyUp(int keymod, int keysym)
-{
 }
