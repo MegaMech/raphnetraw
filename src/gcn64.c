@@ -23,7 +23,7 @@
 #include "gcn64lib.h"
 #include "requests.h"
 
-#include "hidapi.h"
+#include <hidapi/hidapi.h>
 
 static int dusbr_verbose = 0;
 
