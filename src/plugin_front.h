@@ -47,7 +47,9 @@ typedef int CONTROL_INFO; // todo: remove unused m64 struct
 
 void RaphnetInitialize(void);
 void RaphnetShutdown(void);
+typedef int CONTROL_INFO;
 void InitiateControllers(CONTROL_INFO ControlInfo);
+int ScanControllers(void);
 void ReadController(int Control, unsigned char *Command);
 void ControllerCommand(int Control, unsigned char *Command);
 

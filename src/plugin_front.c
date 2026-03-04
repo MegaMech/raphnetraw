@@ -124,15 +124,14 @@ void MyDebugCallback(void *ctx, int level, const char *msg)
 }
 
 void RaphnetInitialize(void) {
-    DebugMessage(M64MSG_INFO, "okay");
-	pb_init(DebugMessage);
-
+    l_DebugCallback = MyDebugCallback;
+	  pb_init(DebugMessage);
     l_PluginInit = 1;
 }
 
 void RaphnetShutdown(void) {
     if (!l_PluginInit) {
-		return M64ERR_NOT_INIT;
+		return;
 	}
 
 	/* reset some local variables */
@@ -142,6 +141,16 @@ void RaphnetShutdown(void) {
 	pb_shutdown();
 
     l_PluginInit = 0;
+}
+
+int ScanControllers(void) {
+	int num = pb_scanControllers();
+
+	pb_romOpen();
+
+  printf("Found %d controllers\n", num);
+
+	return num;
 }
 
 /******************************************************************
@@ -155,37 +164,6 @@ void RaphnetShutdown(void) {
 *******************************************************************/
 void InitiateControllers(CONTROL_INFO ControlInfo)
 {
-//     int i, n_controllers, adap_port;
-
-// 	n_controllers = pb_scanControllers();
-
-// 	if (n_controllers <= 0) {
-//     	DebugMessage(PB_MSG_ERROR, "No adapters detected\n");
-// 		return;
-// 	}
-
-// 	for (i=0; i<MAX_CONTROLLERS; i++) {
-// 		adap_port = EMU_2_ADAP_PORT(i);
-
-// 		if (adap_port < n_controllers) {
-// 			ControlInfo.Controls[i].RawData = 1;
-
-// 			/* Setting this is currently required or we
-// 			 * won't be called at all.
-// 			 *
-// 			 * Look at pif.c update_pif_write() to see why.
-// 			 */
-// 			ControlInfo.Controls[i].Present = 1;
-// 		}
-// 	}
-
-//     DebugMessage(PB_MSG_INFO, "%s version %i.%i.%i %s(compiled "__DATE__" "__TIME__") initialized.", PLUGIN_NAME, VERSION_PRINTF_SPLIT(PLUGIN_VERSION),
-// #ifdef _DEBUG
-// 	"DEBUG "
-// #else
-// 	""
-// #endif
-// 	);
 }
 
 
